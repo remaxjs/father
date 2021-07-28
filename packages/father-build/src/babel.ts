@@ -20,6 +20,7 @@ import * as ts from "typescript";
 interface IBabelOpts {
   cwd: string;
   rootPath?: string;
+  output: string;
   type: "esm" | "cjs";
   target?: "browser" | "node";
   log?: (string) => void;
@@ -40,7 +41,8 @@ interface ITransformOpts {
 export default async function(opts: IBabelOpts) {
   const {
     cwd,
-    rootPath,
+    rootPath = 'src',
+    output = '',
     type,
     watch,
     dispose,
@@ -56,12 +58,17 @@ export default async function(opts: IBabelOpts) {
       nodeVersion,
       disableTypeCheck,
       cjs,
-      lessInBabelMode
+      lessInBabelMode,
+      onTargetDir
     }
   } = opts;
-  const srcPath = join(cwd, "src");
+  const srcPath = join(cwd, rootPath);
   const targetDir = type === "esm" ? "es" : "lib";
-  const targetPath = join(cwd, targetDir);
+  let targetPath = join(output, targetDir);
+  if (onTargetDir) {
+    targetPath = onTargetDir(targetPath, type);
+  }
+  targetPath = join(cwd, targetPath);
 
   log(chalk.gray(`Clean ${targetDir} directory`));
   rimraf.sync(targetPath);
@@ -77,7 +84,7 @@ export default async function(opts: IBabelOpts) {
       browserFiles,
       nodeFiles,
       nodeVersion,
-      lazy: cjs && cjs.lazy,
+      lazy: cjs && (cjs as any).lazy,
       lessInBabelMode
     });
     if (importLibToEs && type === "esm") {
@@ -153,6 +160,15 @@ export default async function(opts: IBabelOpts) {
       .pipe(
         gulpIf(f => !disableTypeCheck && isTsFile(f.path), gulpTs(tsConfig))
       )
+      .on("error", error => {
+        // watch模式下，ts 编译报错不退出进程
+        // eslint-disable-next-line
+        console.error(error);
+
+        if (!watch) {
+          process.exit(1);
+        }
+      })
       .pipe(
         gulpIf(
           f => lessInBabelMode && /\.less$/.test(f.path),

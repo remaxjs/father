@@ -83,6 +83,7 @@ export interface IBundleOptions {
     [opt: string]: any
   };
   pkgs?: string[];
+  onTargetDir: (originTargetDir: string, type: string) => string;
 }
 
 export interface IOpts {
