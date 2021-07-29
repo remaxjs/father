@@ -1,6 +1,6 @@
 {
   "name": "@remax/father",
-  "version": "2.30.7",
+  "version": "2.30.8",
   "description": "Library toolkit based on rollup, docz, storybook, jest and eslint.",
   "homepage": "http://github.com/umijs/father",
   "bugs": "http://github.com/umijs/father/issues",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "7.4.4",
-    "@remax/father-build": "1.19.7",
+    "@remax/father-build": "1.19.8",
     "@storybook/addon-a11y": "^5.2.6",
     "@storybook/addon-actions": "^5.2.6",
     "@storybook/addon-console": "^1.2.1",
