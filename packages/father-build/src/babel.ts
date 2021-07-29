@@ -140,7 +140,12 @@ export default async function(opts: IBabelOpts) {
   }
 
   function createStream(src) {
-    const tsConfig = getTSConfig();
+    // 增加ts 构建属性默认值
+    const tsConfig = {
+      "skipLibCheck": true,
+      "declaration": true,
+      ...getTSConfig()
+    };
     const babelTransformRegexp = disableTypeCheck ? /\.(t|j)sx?$/ : /\.jsx?$/;
 
     function isTsFile(path) {
