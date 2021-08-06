@@ -149,7 +149,7 @@ export default async function(opts: IBabelOpts) {
     const babelTransformRegexp = disableTypeCheck ? /\.(t|j)sx?$/ : /\.jsx?$/;
 
     function isTsFile(path) {
-      return /\.tsx?$/.test(path) && !path.endsWith(".d.ts");
+      return /\.tsx?$/.test(path) /*&& !path.endsWith(".d.ts")*/;
     }
 
     function isTransform(path) {
